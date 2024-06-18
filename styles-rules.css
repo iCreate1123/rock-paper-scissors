@@ -10,6 +10,7 @@
   box-sizing: border-box;
   color: #4f2727;
 }
+
 body {
   display: flex;
   justify-content: center;
@@ -30,17 +31,19 @@ body {
 }
 
 .container {
+  width: 65em;
+  text-align: justify;
   display: flex;
   flex-direction: column;
 }
-.container h1 {
-  z-index: 3;
-  font-weight: 400;
-  margin-bottom: 10rem;
-  font-size: 4.5rem;
-  letter-spacing: 0.5rem;
+
+.container p {
+  font-size: 2.9rem;
+  line-height: 2, 5rem;
+  margin-bottom: 2rem;
 }
-#landing-page-button {
+
+#game-rules-button {
   width: fit-content;
   margin: auto;
   letter-spacing: 0.2rem;
@@ -49,16 +52,15 @@ body {
   cursor: pointer;
   font-size: 3rem;
   background-color: antiquewhite;
-  text-align: center;
   transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out,
     transform 0.2s;
 }
 
-#landing-page-button:hover {
+#game-rules-button:hover {
   background-color: #4f2727;
   color: antiquewhite;
 }
 
-#landing-page-button:active {
+#game-rules-button:active {
   transform: rotate(10deg);
 }

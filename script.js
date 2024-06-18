@@ -1,3 +1,24 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const landingPageButton = document.querySelector("#landing-page-button");
+    const rulesPageButton = document.querySelector("#game-rules-button");
+
+    if (landingPageButton) {
+        landingPageButton.addEventListener("click", () => {
+            window.location.href = "game-rules.html";
+        });
+    }
+
+    if (rulesPageButton) {
+        rulesPageButton.addEventListener("click", () => {
+            window.location.href = "game-page.html";
+        });
+    }
+});
+
+
+
+
+//game logic 
 let gameLoop = true; 
 let userRoundsWon = 0
 let computerRoundsWon = 0;
@@ -28,7 +49,8 @@ let computerRoundsWon = 0;
     }   
 
     let computerChoice = computerChoiceFunc()
-    let userChoice = prompt("Choose your weapon");
+    // let userChoice = prompt("Choose your weapon"); //console prompt, delete comment to ask user 
+    //for input
     userChoice = userChoice.toLocaleLowerCase();
     let notValidChoice = true;
     
