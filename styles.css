@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  min-height: 100vh;
+  background-color: #ffacf7;
+  background-image: url(images/Pasted\ image.png);
+  background-size: 200px;
+  animation: backgroundFall 20s linear infinite;
+}
+@keyframes backgroundFall {
+  0% {
+    background-position: 80% -100%;
+  }
+  100% {
+    background-position: 0% 100vh;
+  }
+}
