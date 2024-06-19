@@ -13,6 +13,93 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "game-page.html";
         });
     }
+
+
+    const rock = document.querySelector("#rock");
+    const paper = document.querySelector("#paper");
+    const scissor = document.querySelector("#scissor");
+    let selected = false;
+
+    const rockSelected = false;
+    const paperSelected = false;
+    const scissorSelected = false;
+
+    // animation for opacity and scale selection
+    const opacityReduction = (a, b) => {
+        a.style.animation = "fadeIn 0.8s forwards";
+        b.style.animation = "fadeIn 0.8s forwards";
+    }
+    const scaleElement = (a) => {
+        a.style.transform = "scale(1.1)";
+    }
+    const vanishElement = (a, b) => {
+        a.style.animation = "vanish 0.4s forwards";
+        b.style.animation = "vanish 0.4s forwards";
+
+        a.addEventListener("animationed", ()=> a.remove())
+        b.addEventListener("animationed", ()=> b.remove())
+    } 
+    //selection event listeners
+    rock.addEventListener("click", () => {
+        opacityReduction(paper, scissor);
+        scaleElement(rock);
+        rock.style.animation = "none";
+        selected = true;
+        rockSelected = true;
+        paperSelected = false;
+        scissorSelected= false;
+    })
+    
+    paper.addEventListener("click", () => {
+        opacityReduction(rock, scissor);
+        scaleElement(paper) ;
+        paper.style.animation = "none";
+        selected = true;
+        rockSelected = false;
+        paperSelected = true;
+        scissorSelected= false;
+    })
+
+    scissor.addEventListener("click", () => {
+        opacityReduction(paper, rock);
+        scaleElement(scissor);
+        scissor.style.animation = "none";
+        selected = true;
+        rockSelected = false;
+        paperSelected = false;
+        scissorSelected= true;
+    })
+    
+
+
+    //start game button logic
+    const startGameButton = document.querySelector("#start-game-button")
+    
+    const startGame = function(selected) {
+        if(!selected) {
+           const warning = document.createElement('p');
+           warning.setAttribute("id", "warning")
+           warning.innerText = "Please select a weapon to proceed";
+           startGameButton.insertAdjacentElement("beforebegin", warning)
+        } 
+        
+    }
+
+    startGameButton.addEventListener('click', () =>{
+        startGame(selected) 
+        if (selected) {
+            document.body.removeChild(warning)
+        }
+        if (rockSelected) {
+            //call vanish
+            // call move
+            vanishElement(paper, scissor)
+         } //else if (paperSelected) {
+
+        // } else {
+
+        // }
+    })
 });
 
 
