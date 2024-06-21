@@ -20,29 +20,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const scissor = document.querySelector("#scissor");
     let selected = false;
 
-    const rockSelected = false;
-    const paperSelected = false;
-    const scissorSelected = false;
+    let rockSelected = false;
+    let paperSelected = false;
+    let scissorSelected = false;
 
     // animation for opacity and scale selection
     const opacityReduction = (a, b) => {
-        a.style.animation = "fadeIn 0.8s forwards";
-        b.style.animation = "fadeIn 0.8s forwards";
+        a.style.animation = "fadeIn 0.8s linear forwards";
+        b.style.animation = "fadeIn 0.8s linear forwards";
     }
-    const scaleElement = (a) => {
-        a.style.transform = "scale(1.1)";
-    }
-    const vanishElement = (a, b) => {
-        a.style.animation = "vanish 0.4s forwards";
-        b.style.animation = "vanish 0.4s forwards";
 
-        a.addEventListener("animationed", ()=> a.remove())
-        b.addEventListener("animationed", ()=> b.remove())
+    const vanishElement = (a, b) => {
+        a.style.animation = "vanish 1.1s forwards";
+        b.style.animation = "vanish 1.1s forwards";
+
+        a.addEventListener("animationend", () => a.remove())
+        b.addEventListener("animationend", () => b.remove())
     } 
+
     //selection event listeners
     rock.addEventListener("click", () => {
         opacityReduction(paper, scissor);
-        scaleElement(rock);
         rock.style.animation = "none";
         selected = true;
         rockSelected = true;
@@ -52,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     paper.addEventListener("click", () => {
         opacityReduction(rock, scissor);
-        scaleElement(paper) ;
         paper.style.animation = "none";
         selected = true;
         rockSelected = false;
@@ -62,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     scissor.addEventListener("click", () => {
         opacityReduction(paper, rock);
-        scaleElement(scissor);
         scissor.style.animation = "none";
         selected = true;
         rockSelected = false;
@@ -73,33 +69,87 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     //start game button logic
+    //
+
     const startGameButton = document.querySelector("#start-game-button")
-    
-    const startGame = function(selected) {
-        if(!selected) {
-           const warning = document.createElement('p');
-           warning.setAttribute("id", "warning")
-           warning.innerText = "Please select a weapon to proceed";
-           startGameButton.insertAdjacentElement("beforebegin", warning)
-        } 
-        
+    const warning = document.createElement('p');
+    //removes the warning paragraphs
+    const removeWarning = () => {
+        const existingWarning = document.querySelector("#warning");
+        if (existingWarning) {
+            existingWarning.remove();
+        }
+    };
+
+
+    //removes unselected elements
+    const removeElements = function(rockSelected, paperSelected, scissorSelected) {
+        if(rockSelected) {
+            vanishElement(paper, scissor)
+        } else if(paperSelected) {
+            vanishElement(rock, scissor)
+        } else if(scissorSelected) {
+        vanishElement(paper, rock)
+        }
     }
 
-    startGameButton.addEventListener('click', () =>{
-        startGame(selected) 
-        if (selected) {
-            document.body.removeChild(warning)
+    const heading = document.querySelector("h1")
+
+    startGameButton.addEventListener('click', () => {
+        removeElements(rockSelected, paperSelected, scissorSelected);   
+        if (!rockSelected && !paperSelected && !scissorSelected) {
+            const warning = document.createElement('p');
+            warning.setAttribute("id", "warning")
+           warning.innerText = "Please select a weapon to proceed";
+           startGameButton.insertAdjacentElement("beforebegin", warning)
+        }  else {
+            removeWarning();
+            heading.style.animation = "flyUp 1.1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both";
+            startGameButton.style.animation = "flyDown 1.1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both";
+            setTimeout(() => {
+                    document.body.innerHTML = "";
+                const headingContainer = document.createElement("div");
+                headingContainer.innerHTML = `<h1 id="round-heading">Round: </h1>`
+                // make animation 
+                document.body.appendChild(headingContainer)
+                
+                const informationContainer = document.createElement("div")
+                informationContainer.innerHTML = `
+                <div id="information-container">
+                    <div id="player-information-container">
+                        <h1>Player</h1>
+                        <h2>Rounds Won: </h2>
+                    </div>
+                    <div id="computer-information-container">
+                        <h1>PC</h1>
+                        <h2>Rounds Won: </h2>
+                    </div>
+                </div>
+                `
+                document.body.appendChild(informationContainer)
+                
+                const playerComputerChoiceContainer = document.createElement('div')
+                playerComputerChoiceContainer.innerHTML = `
+                 <div id="player-computer-choice-container">
+                    <img id="rock" src="images/rock-png.png" alt="rock image"> //image is just a placeholder
+                    <h1>VS</h1>
+                    <img id="rock" src="images/rock-png.png" alt="rock image">
+                </div>
+                `
+                document.body.appendChild(playerComputerChoiceContainer)
+
+               const winnerContainer = document.createElement("div")
+               winnerContainer.innerHTML = `
+                <div id="winner-container"><h1>placeholder for winner</h1></div>
+               `
+                document.body.appendChild(winnerContainer)
+            }, 1300)
+
         }
-        if (rockSelected) {
-            //call vanish
-            // call move
-            vanishElement(paper, scissor)
-         } //else if (paperSelected) {
 
-        // } else {
-
-        // }
+        
     })
+   
 });
 
 
@@ -135,9 +185,9 @@ let computerRoundsWon = 0;
         return scissors
     }   
 
-    let computerChoice = computerChoiceFunc()
+    // let computerChoice = computerChoiceFunc()
     // let userChoice = prompt("Choose your weapon"); //console prompt, delete comment to ask user 
-    //for input
+    // for input
     userChoice = userChoice.toLocaleLowerCase();
     let notValidChoice = true;
     
