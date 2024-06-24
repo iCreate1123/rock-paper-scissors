@@ -127,12 +127,3 @@ img:hover {
     transform: translateY(200px);
   }
 }
-
-#information-container {
-  display: flex;
-  flex-direction: row;
-  text-align: center;
-}
-#player-information-container {
-  padding-right: 30rem;
-}
