@@ -1,0 +1,64 @@
+@font-face {
+  font-family: Luckiest Guy;
+  src: url(font/Luckiest_Guy/LuckiestGuy-Regular.ttf);
+}
+
+* {
+  font-family: Luckiest Guy;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #4f2727;
+  font-size: 1.7rem;
+}
+img {
+  width: 260px;
+  margin: 1.4rem;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffacf7;
+}
+
+div {
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+}
+
+h1 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+h2 {
+  margin-left: 7rem;
+  margin-right: 7rem;
+  animation-duration: 4s;
+}
+
+button {
+  width: fit-content;
+  margin: auto;
+  letter-spacing: 0.2rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 3rem;
+  cursor: pointer;
+  font-size: 3rem;
+  background-color: antiquewhite;
+  text-align: center;
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out,
+    transform 0.2s;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+}
+
+button:hover {
+  background-color: #4f2727;
+  color: antiquewhite;
+}
+button:active {
+  transform: rotate(10deg);
+}

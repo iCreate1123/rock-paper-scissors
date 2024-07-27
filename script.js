@@ -78,23 +78,26 @@ document.addEventListener("DOMContentLoaded", () => {
             existingWarning.remove();
         }
     };
-
+    let rockUrl = 'images/rock-png.png'
+    let paperUrl  = 'images/paper-png.png'
+    let scissorUrl = 'images/scaiars.png'
     let playerChoiceUrlSource
     //removes unselected elements
     const removeElements = function(rockSelected, paperSelected, scissorSelected) {
         if(rockSelected) {
             vanishElement(paper, scissor) 
-            playerChoiceUrlSource = rock.src; 
+           localStorage.setItem("playerChoiceUrlSource", rockUrl); 
+    
         } else if(paperSelected) {
             vanishElement(rock, scissor)
-            playerChoiceUrlSource = paper.src;
+            localStorage.setItem("playerChoiceUrlSource", paperUrl)
         } else if(scissorSelected) {
         vanishElement(paper, rock)
-        playerChoiceUrlSource = scissor.src;
+        localStorage.setItem("playerChoiceUrlSource", scissorUrl)
         }
     }
 
-    window.playerChoiceUrlSource = playerChoiceUrlSource;
+   
 
     const heading = document.querySelector("h1")
 
@@ -119,90 +122,3 @@ document.addEventListener("DOMContentLoaded", () => {
    
 });
 
-
-
-
-//game logic 
-let gameLoop = true; 
-let userRoundsWon = 0
-let computerRoundsWon = 0;
-
- while (gameLoop) {
-    if (userRoundsWon === 2) {
-        console.log("HUMAN WON GAME!")
-        // gameLoop = false;
-        break;
-    } else if (computerRoundsWon === 2) {
-        console.log("COMPUTER WON GAME!");
-        // gameLoop = false;
-        break;
-    }
-
-    function computerChoiceFunc () {
-        let randomNumber = Math.floor(Math.random() * 3) + 1;
-       
-    
-        if (randomNumber === 1) {
-            return rock;
-        } else if (randomNumber === 2) {
-            return paper 
-        } 
-        return scissors
-    }   
-
-    // let computerChoice = computerChoiceFunc()
-    // let userChoice = prompt("Choose your weapon"); //console prompt, delete comment to ask user 
-    // for input
-    userChoice = userChoice.toLocaleLowerCase();
-    let notValidChoice = true;
-    
-    if (userChoice === "rock" | userChoice === "paper" | userChoice === "scissors") {
-        notValidChoice = false; 
-    } else {
-        while (notValidChoice) {
-            userChoice = prompt("Please choose a valid weapon");
-            if (userChoice === 'paper' | userChoice === 'rock' | userChoice === 'scissors') {
-                notValidChoice = false;
-            }
-        } 
-    }
-
-    console.log(`computer choose ${computerChoice}`);
-    console.log(`user chose ${userChoice}`); //debugging purpose
-    console.log("BATTLE");
-
-    if (computerChoice === userChoice) {
-        console.log("DRAW");
-        continue;
-    }
-    if (computerChoice === "rock") {
-        if (userChoice === "paper") {
-            userRoundsWon ++;
-            console.log("USER WINS")
-        } else {
-            computerRoundsWon++
-            console.log("COMPUTER WINS")
-        }
-    }
-
-    if (computerChoice === "scissors") {
-        if (userChoice === "rock") {
-            userRoundsWon++;
-            console.log("USER WINS")
-        } else {
-            computerRoundsWon++;
-            console.log("COMPUTER WINS")
-        }
-    }
-
-    if (computerChoice === "paper") {
-        if (userChoice === "scissors") {
-            userRoundsWon++;
-            console.log("USER WINS")
-        } else {
-            computerRoundsWon++
-            console.log("COMPUTER WINS")
-        }
-    }
-
-}
