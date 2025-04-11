@@ -1,104 +1,111 @@
+// Constants
+const CHOICES = {
+    PAPER: "paper-png.png",
+    ROCK: "rock-png.png",
+    SCISSORS: "scaiars.png"
+};
+
+const WINNING_COMBINATIONS = {
+    [CHOICES.ROCK]: CHOICES.SCISSORS,
+    [CHOICES.SCISSORS]: CHOICES.PAPER,
+    [CHOICES.PAPER]: CHOICES.ROCK
+};
+
+const ROUNDS_TO_WIN = 3;
+const REDIRECT_DELAY = 2500;
+
+// Game state management
+class GameState {
+    constructor() {
+        this.humanRoundsWon = parseInt(sessionStorage.getItem('humanRoundsWon') || '0');
+        this.computerRoundsWon = parseInt(sessionStorage.getItem('computerRoundsWon') || '0');
+        this.roundCount = parseInt(sessionStorage.getItem('roundCount') || '0') + 1;
+    }
+
+    save() {
+        sessionStorage.setItem('humanRoundsWon', this.humanRoundsWon);
+        sessionStorage.setItem('computerRoundsWon', this.computerRoundsWon);
+        sessionStorage.setItem('roundCount', this.roundCount);
+    }
+}
+
+// Helper functions
+function getFilenameFromUrl(url) {
+    return url.substring(url.lastIndexOf('/') + 1);
+}
+
+function getComputerChoice() {
+    const choices = Object.values(CHOICES);
+    const randomIndex = Math.floor(Math.random() * choices.length);
+    return `images/${choices[randomIndex]}`;
+}
+
+function determineWinner(playerChoice, computerChoice) {
+    if (playerChoice === computerChoice) return "DRAW";
+    return WINNING_COMBINATIONS[playerChoice] === computerChoice ? "Player Wins" : "Computer Wins";
+}
+
+function updateScore(winner, gameState) {
+    if (winner === "Player Wins") {
+        gameState.humanRoundsWon++;
+    } else if (winner === "Computer Wins") {
+        gameState.computerRoundsWon++;
+    }
+}
+
+function redirectToNextPage(gameState) {
+    const nextPage = (gameState.humanRoundsWon === ROUNDS_TO_WIN || gameState.computerRoundsWon === ROUNDS_TO_WIN)
+        ? "winner-page.html"
+        : "game-page.html";
+
+    setTimeout(() => {
+        window.location.href = nextPage;
+    }, REDIRECT_DELAY);
+}
+
+// Main game initialization
 document.addEventListener("DOMContentLoaded", () => {
-    const computerChoiceImage = document.querySelector('#computer-choice');
-    const playerChoiceImage = document.querySelector('#player-choice');
-    const roundHeading = document.querySelector('#round-heading');
-    const humanRounds = document.querySelector("#human-rounds"); 
-    const computerRounds = document.querySelector("#computer-rounds");
-    const roundWinner = document.querySelector("#round-winner");
+    // DOM Elements
+    const elements = {
+        computerChoiceImage: document.querySelector('#computer-choice'),
+        playerChoiceImage: document.querySelector('#player-choice'),
+        roundHeading: document.querySelector('#round-heading'),
+        humanRounds: document.querySelector("#human-rounds"),
+        computerRounds: document.querySelector("#computer-rounds"),
+        roundWinner: document.querySelector("#round-winner")
+    };
 
-    // Retrieve or initialize rounds won counts from sessionStorage
-    let humanRoundsWon = sessionStorage.getItem('humanRoundsWon') ? parseInt(sessionStorage.getItem('humanRoundsWon')) : 0;
-    let computerRoundsWon = sessionStorage.getItem('computerRoundsWon') ? parseInt(sessionStorage.getItem('computerRoundsWon')) : 0;
+    // Initialize game state
+    const gameState = new GameState();
 
-    // Update round counters in the UI
-    humanRounds.textContent = `Rounds won: ${humanRoundsWon}`;
-    computerRounds.textContent = `Rounds won: ${computerRoundsWon}`;
+    // Update UI with current state
+    elements.roundHeading.textContent = `Round: ${gameState.roundCount}`;
+    elements.humanRounds.textContent = `Rounds won: ${gameState.humanRoundsWon}`;
+    elements.computerRounds.textContent = `Rounds won: ${gameState.computerRoundsWon}`;
 
-    let roundCount = sessionStorage.getItem('roundCount') ? parseInt(sessionStorage.getItem('roundCount')) : 0;
-    roundCount++;
-    sessionStorage.setItem('roundCount', roundCount);
-    roundHeading.textContent = `Round: ${roundCount}`;
-   
-    function computerChoiceFunc() {
-        const choices = ["images/paper-png.png", "images/rock-png.png", "images/scaiars.png"];
-        let randomIndex = Math.floor(Math.random() * 3);
-        return choices[randomIndex];
-    }
-
-    function updateComputerChoice() {
-        computerChoiceImage.src = computerChoiceFunc();
-    }
-    updateComputerChoice();
-
-    // Helper function to extract the filename from a URL
-    function getFilenameFromUrl(url) {
-        return url.substring(url.lastIndexOf('/') + 1);
-    }
+    // Set computer choice
+    elements.computerChoiceImage.src = getComputerChoice();
 
     // Set player choice from previous script
-    let playerChoiceUrl = localStorage.getItem('playerChoiceUrlSource');
-    if (playerChoiceUrl && playerChoiceImage) {
-        playerChoiceImage.src = playerChoiceUrl;
+    const playerChoiceUrl = localStorage.getItem('playerChoiceUrlSource');
+    if (playerChoiceUrl && elements.playerChoiceImage) {
+        elements.playerChoiceImage.src = playerChoiceUrl;
     }
 
-    const playerChoiceRelativePath = getFilenameFromUrl(playerChoiceImage.src);
-    const computerChoiceRelativePath = getFilenameFromUrl(computerChoiceImage.src);
+    // Get relative paths for comparison
+    const playerChoice = getFilenameFromUrl(elements.playerChoiceImage.src);
+    const computerChoice = getFilenameFromUrl(elements.computerChoiceImage.src);
 
+    // Determine round winner and update scores
+    const winner = determineWinner(playerChoice, computerChoice);
+    elements.roundWinner.textContent = winner;
+    updateScore(winner, gameState);
 
-    // Game logic to determine round winner
-    if (playerChoiceRelativePath === computerChoiceRelativePath) {
-        roundWinner.textContent = "DRAW";
-    } else if (computerChoiceRelativePath === "rock-png.png") {
-        if (playerChoiceRelativePath === "paper-png.png") {
-            roundWinner.textContent = "Player Wins";
-            humanRoundsWon++;
-            console.log(humanRoundsWon);
-        } else {
-            roundWinner.textContent = "Computer Wins";
-            computerRoundsWon++;
-            console.log(computerRoundsWon)
-        }
-    } else if (computerChoiceRelativePath === "scaiars.png") {
-        if (playerChoiceRelativePath === "rock-png.png") {
-            roundWinner.textContent = "Player Wins";
-            humanRoundsWon++;
-            console.log(humanRoundsWon);
-        } else {
-            roundWinner.textContent = "Computer Wins";
-            computerRoundsWon++;
-            console.log(computerRoundsWon)
+    // Save updated state and update UI
+    gameState.save();
+    elements.humanRounds.textContent = `Rounds won: ${gameState.humanRoundsWon}`;
+    elements.computerRounds.textContent = `Rounds won: ${gameState.computerRoundsWon}`;
 
-        }
-    } else if (computerChoiceRelativePath === "paper-png.png") {
-        if (playerChoiceRelativePath === "rock-png.png") {
-            roundWinner.textContent = "Computer Wins";
-            computerRoundsWon++;
-            console.log(computerRoundsWon)
-        } else {
-            roundWinner.textContent = "Player Wins";
-            humanRoundsWon++;
-            console.log(humanRoundsWon);
-
-        }
-    }
-      // Save the updated scores to sessionStorage
-      sessionStorage.setItem('humanRoundsWon', humanRoundsWon);
-      sessionStorage.setItem('computerRoundsWon', computerRoundsWon);
-
-    // Update the rounds won in the UI
-    humanRounds.textContent = `Rounds won: ${humanRoundsWon}`;
-    computerRounds.textContent = `Rounds won: ${computerRoundsWon}`;
-
-// Check for a game winner and redirect accordingly
-    if(humanRoundsWon === 3 || computerRoundsWon === 3) {
-        setTimeout(() => {
-        window.location.href = "winner-page.html";
-        }, 2500);   
-    } else {
-        setTimeout(() => {
-            window.location.href = "game-page.html"
-        }, 2500)
-    }
-
+    // Redirect to next page
+    redirectToNextPage(gameState);
 });
- 
